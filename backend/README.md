@@ -1,1 +1,1 @@
-Démarrer le serveur : nodemon start
+Démarrer le serveur : nodemon server
