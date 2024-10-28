@@ -45,7 +45,7 @@ exports.createBook = (req, res, next) => {
     );	
   };	
       
-  exports.modifyBook = (req, res, next) => {	
+  exports.updateBook = (req, res, next) => {	
     const book = new Book({
         userId: req.body.userId,
         title: req.body.title,
