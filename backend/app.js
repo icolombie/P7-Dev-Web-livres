@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const booksRoutes = require('./routes/books');
 const userRoutes = require('./routes/user');
+const path = require('path');
 
 
 
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/books', booksRoutes);
 app.use('/api/auth', userRoutes);
 
