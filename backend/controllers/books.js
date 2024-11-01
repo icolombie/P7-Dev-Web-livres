@@ -89,4 +89,25 @@ exports.createBook = (req, res, next) => {
             res.status(500).json({ error });
         });
  };
- 
+    exports.rateBook = async (req, res, next) => { 
+      const { userId, grade } = req.body;
+        const { id } = req.params;
+         if (isNaN(grade)) { return res.status(400).json({ message: 'Invalid grade value' }); }
+          try { const book = await Book.findById(id); 
+            if (!book) { return res.status(404).json({ message: 'Livre non trouvé' }); }
+              book.ratings.push({ userId, grade });
+                const totalRatings = book.ratings.length;
+                const sumGrades = book.ratings.reduce((sum, rating) => sum + rating.grade, 0); 
+                book.averageRating = sumGrades / totalRatings;
+                const updatedBook = await book.save();
+                 res.status(200).json(updatedBook); } 
+                 catch (error) { res.status(500).json({ error }); 
+                }
+       };
+
+   exports.getBestRatedBooks = async (req, res, next) => { 
+    try { const bestRatedBooks = await Book.find().sort({ averageRating: -1 }).limit(3);
+     res.status(200).json(bestRatedBooks); } 
+     catch (error) { res.status(500).json({ error }); 
+    }
+   };

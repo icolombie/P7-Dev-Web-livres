@@ -29,6 +29,7 @@ export async function getAuthenticatedUser() {
     }
     return { authenticated: true, user: { userId, token } };
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error('getAuthenticatedUser, Something Went Wrong', err);
     return defaultReturnObject;
   }
@@ -44,6 +45,7 @@ export async function getBooks() {
     const books = formatBooks(response.data);
     return books;
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(err);
     return [];
   }
@@ -60,6 +62,7 @@ export async function getBook(id) {
     book.id = book._id;
     return book;
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(err);
     return null;
   }
@@ -73,6 +76,7 @@ export async function getBestRatedBooks() {
     });
     return formatBooks(response.data);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     return [];
   }
@@ -86,6 +90,7 @@ export async function deleteBook(id) {
     });
     return true;
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(err);
     return false;
   }
@@ -94,7 +99,7 @@ export async function deleteBook(id) {
 export async function rateBook(id, userId, rating) {
   const data = {
     userId,
-    rating: parseInt(rating, 10),
+    grade: parseInt(rating, 10),
   };
 
   try {
@@ -108,6 +113,7 @@ export async function rateBook(id, userId, rating) {
     book.id = book._id;
     return book;
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     return e.message;
   }
@@ -141,6 +147,7 @@ export async function addBook(data) {
       },
     });
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(err);
     return { error: true, message: err.message };
   }
@@ -157,6 +164,7 @@ export async function updateBook(data, id) {
     year: data.year,
     genre: data.genre,
   };
+  // eslint-disable-next-line no-console
   console.log(data.file[0]);
   if (data.file[0]) {
     newData = new FormData();
@@ -177,6 +185,7 @@ export async function updateBook(data, id) {
     });
     return newBook;
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.error(err);
     return { error: true, message: err.message };
   }
