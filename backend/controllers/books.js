@@ -79,7 +79,7 @@ exports.createBook = (req, res, next) => {
             } else {
                 const filename = book.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${filename}`, () => {
-                    Thing.deleteOne({_id: req.params.id})
+                    Book.deleteOne({_id: req.params.id})
                         .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
                         .catch(error => res.status(401).json({ error }));
                 });
@@ -92,8 +92,8 @@ exports.createBook = (req, res, next) => {
     exports.rateBook = async (req, res, next) => { 
       const { userId, grade } = req.body;
         const { id } = req.params;
-         if (isNaN(grade)) { return res.status(400).json({ message: 'Invalid grade value' }); }
-          try { const book = await Book.findById(id); 
+          try { 
+            const book = await Book.findById(id); 
             if (!book) { return res.status(404).json({ message: 'Livre non trouvé' }); }
               book.ratings.push({ userId, grade });
                 const totalRatings = book.ratings.length;
@@ -106,8 +106,9 @@ exports.createBook = (req, res, next) => {
        };
 
    exports.getBestRatedBooks = async (req, res, next) => { 
-    try { const bestRatedBooks = await Book.find().sort({ averageRating: -1 }).limit(3);
-     res.status(200).json(bestRatedBooks); } 
-     catch (error) { res.status(500).json({ error }); 
+    try { 
+      const bestRatedBooks = await Book.find().sort({ averageRating: -1 }).limit(3);
+      res.status(200).json(bestRatedBooks); } 
+      catch (error) { res.status(500).json({ error }); 
     }
    };
