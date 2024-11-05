@@ -1,6 +1,7 @@
 const express = require("express");
+require("dotenv").config();
 const mongoose = require("mongoose");
-
+const uri = process.env.MONGODB_URI;
 const booksRoutes = require("./routes/books");
 const userRoutes = require("./routes/user");
 const path = require("path");
@@ -8,10 +9,7 @@ const path = require("path");
 const app = express();
 
 mongoose
-  .connect(
-    "mongodb+srv://books-user:UoUZRgR4c0OM00dU@cluster0.3yspd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 

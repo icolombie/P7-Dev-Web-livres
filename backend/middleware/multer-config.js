@@ -1,4 +1,6 @@
 const multer = require("multer");
+const sharp = require("sharp");
+const path = require("path");
 
 const MIME_TYPES = {
   "image/jpg": "jpg",
@@ -7,15 +9,39 @@ const MIME_TYPES = {
   "image/png": "png",
 };
 
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, "images");
-  },
-  filename: (req, file, callback) => {
-    const name = file.originalname.split(" ").join("_");
-    const extension = MIME_TYPES[file.mimetype];
-    callback(null, name + Date.now() + "." + extension);
-  },
-});
+const storage = multer.memoryStorage();
 
-module.exports = multer({ storage: storage }).single("image");
+const upload = multer({ storage: storage }).single("image");
+
+const uploadAndOptimizeImage = (req, res, next) => {
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+
+    const name = req.file.originalname.split(" ").join("_");
+    const extension = MIME_TYPES[req.file.mimetype];
+    const filename = name + Date.now() + "." + extension;
+    const outputPath = path.join("images", filename);
+
+    req.file.filename = filename;
+
+    try {
+      await sharp(req.file.buffer)
+        .resize(400, 600, {
+          fit: sharp.fit.cover,
+          position: "center",
+        })
+        .toFormat("jpeg")
+        .jpeg({ quality: 80 })
+        .toFile(outputPath);
+
+      req.file.path = `/images/${filename}`;
+      next();
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+};
+
+module.exports = uploadAndOptimizeImage;

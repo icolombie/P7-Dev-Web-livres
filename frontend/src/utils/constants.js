@@ -5,7 +5,7 @@ export const API_ROUTES = {
   BOOKS: `${API_URL}/api/books`,
   BOOK: `${API_URL}/api/books/:id`,
   RATING: `${API_URL}/api/books/:id/auth/rating`,
-  BEST_RATED: `${API_URL}/api/books/bestrating/:id`,
+  BEST_RATED: `${API_URL}/api/books/bestrating`,
 };
 
 export const APP_ROUTES = {
