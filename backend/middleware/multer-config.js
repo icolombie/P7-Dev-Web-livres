@@ -19,23 +19,25 @@ const uploadAndOptimizeImage = (req, res, next) => {
       return res.status(500).json({ error: err.message });
     }
 
+    if (!req.file) {
+      return next();
+    }
+
     const name = req.file.originalname.split(" ").join("_");
     const extension = MIME_TYPES[req.file.mimetype];
     const filename = name + Date.now() + "." + extension;
     const outputPath = path.join("images", filename);
 
-    req.file.filename = filename;
-
     try {
       await sharp(req.file.buffer)
         .resize(400, 600, {
           fit: sharp.fit.cover,
-          position: "center",
         })
         .toFormat("jpeg")
         .jpeg({ quality: 80 })
         .toFile(outputPath);
 
+      req.file.filename = filename;
       req.file.path = `/images/${filename}`;
       next();
     } catch (error) {
